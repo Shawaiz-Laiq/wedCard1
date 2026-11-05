@@ -15,15 +15,24 @@ html {
 }
 
 body {
+    background: #04140d;
+    color: var(--ivory);
+    font-family: "Cormorant Garamond", serif;
+    overflow: hidden;
+}
+
+/* page background lives on its own fixed layer so scrolling never repaints it */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
     background:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23d4af5f' stroke-opacity='.09'%3E%3Crect x='20' y='20' width='40' height='40'/%3E%3Crect x='20' y='20' width='40' height='40' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='6'/%3E%3C/g%3E%3C/svg%3E"),
         radial-gradient(ellipse at 50% 0%, #11513a 0%, transparent 55%),
         radial-gradient(ellipse at 50% 100%, #0c3d2a 0%, transparent 55%),
         #04140d;
-    background-attachment: fixed;
-    color: var(--ivory);
-    font-family: "Cormorant Garamond", serif;
-    overflow: hidden;
 }
 
 body.invitation-open {
@@ -128,8 +137,7 @@ body.invitation-open .light-canvas {
 }
 
 /* ---- moving velvet curtain ---- */
-.art-sway,
-.cloth-light {
+.art-sway {
     inset: 0;
     pointer-events: none;
     -webkit-mask-image: radial-gradient(ellipse 44% 47% at 50% 42%, #000 52%, transparent 100%);
@@ -148,23 +156,9 @@ body.invitation-open .light-canvas {
     100% { transform: skewX(0.9deg)  scaleX(0.998); }
 }
 
-/* soft light bands gliding over the folds */
-.cloth-light {
-    mix-blend-mode: soft-light;
-    background:
-        linear-gradient(100deg, transparent 0%, rgba(255, 236, 170, 0.55) 50%, transparent 100%) 0 0 / 260px 100% repeat-x,
-        linear-gradient(100deg, transparent 0%, rgba(160, 255, 210, 0.35) 50%, transparent 100%) 0 0 / 170px 100% repeat-x;
-    animation: clothFlow 7s linear infinite;
-}
-
-@keyframes clothFlow {
-    to { background-position: 260px 0, -170px 0; }
-}
-
 /* ---- breathing warm light around the scene ---- */
 .ambient {
     pointer-events: none;
-    mix-blend-mode: screen;
     border-radius: 50%;
     animation: ambientBreath 4.5s ease-in-out infinite;
 }
@@ -205,7 +199,6 @@ body.invitation-open .light-canvas {
     aspect-ratio: 1;
     border-radius: 50%;
     pointer-events: none;
-    mix-blend-mode: screen;
     background: radial-gradient(circle, rgba(255, 240, 180, 1) 0, rgba(255, 205, 95, 0.6) 26%, rgba(255, 180, 60, 0) 70%);
     transform: translate(-50%, -50%);
     animation: dotTwinkle var(--t, 3s) ease-in-out var(--d, 0s) infinite;
@@ -231,7 +224,6 @@ body.invitation-open .light-canvas {
     left: 0;
     width: 26%;
     background: linear-gradient(100deg, transparent, rgba(255, 244, 205, 0.5) 50%, transparent);
-    mix-blend-mode: screen;
     transform: translateX(-160%) skewX(-18deg);
     animation: coverShine 5s ease-in-out infinite;
 }
@@ -254,7 +246,22 @@ body.invitation-open .light-canvas {
     background: radial-gradient(circle, rgba(255, 225, 140, 0.18), rgba(255, 225, 140, 0) 70%);
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    animation: sealGlow 2.2s ease-in-out infinite;
+    box-shadow: 0 0 26px 6px rgba(255, 205, 100, 0.5);
+}
+
+.open-button::before {
+    content: "";
+    position: absolute;
+    inset: -45%;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(255, 225, 140, 0.6) 0, rgba(255, 200, 90, 0.22) 40%, transparent 68%);
+    animation: sealPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes sealPulse {
+    0%, 100% { opacity: 0.35; transform: scale(0.85); }
+    50%      { opacity: 1;    transform: scale(1.1); }
 }
 
 .open-button:hover {
@@ -268,11 +275,6 @@ body.invitation-open .light-canvas {
 
 .open-button:active {
     transform: translate(-50%, -50%) scale(0.96);
-}
-
-@keyframes sealGlow {
-    0%, 100% { box-shadow: 0 0 18px 4px rgba(255, 205, 100, 0.40), 0 0 50px 12px rgba(255, 190, 70, 0.20); }
-    50%      { box-shadow: 0 0 38px 14px rgba(255, 225, 140, 0.85), 0 0 100px 32px rgba(255, 200, 90, 0.45); }
 }
 
 .seal-ring {
@@ -299,7 +301,6 @@ body.invitation-open .light-canvas {
     inset: 0;
     border-radius: 50%;
     pointer-events: none;
-    mix-blend-mode: screen;
     background: conic-gradient(from 0deg, transparent 0deg 290deg, rgba(255, 246, 205, 0.7) 335deg, transparent 360deg);
     -webkit-mask: radial-gradient(circle closest-side, #000 82%, transparent 100%);
     mask: radial-gradient(circle closest-side, #000 82%, transparent 100%);
@@ -434,13 +435,8 @@ body.invitation-open .light-canvas {
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
-    animation: goldFlow 6s ease-in-out infinite alternate;
 }
 
-@keyframes goldFlow {
-    from { background-position: 0 0; }
-    to   { background-position: 100% 0; }
-}
 
 
 /* =========================
@@ -536,7 +532,6 @@ body.invitation-open .invitation {
     color: var(--gold);
     margin-bottom: 22px;
     animation: spinSlow 36s linear infinite;
-    filter: drop-shadow(0 0 12px rgba(212, 175, 95, 0.6));
 }
 
 .medallion.small {
@@ -675,6 +670,7 @@ body.invitation-open .invitation {
 
 /* entrance after opening */
 body.invitation-open .hero-section > * {
+    animation-name: heroIn;
     animation-duration: 1.2s;
     animation-fill-mode: both;
     animation-timing-function: ease;
@@ -754,7 +750,7 @@ body.invitation-open .hero-section > :nth-child(7) { animation-delay: 1.8s; }
 .photo-inner {
     position: relative;
     width: 100%;
-    /* height: 100%; */
+    height: 100%;
     overflow: hidden;
     border-radius: 192px 192px 7px 7px;
     background: #0b3223;
@@ -794,7 +790,6 @@ body.invitation-open .hero-section > :nth-child(7) { animation-delay: 1.8s; }
     height: 54px;
     color: var(--gold);
     animation: spinSlow 30s linear infinite;
-    filter: drop-shadow(0 0 10px rgba(212, 175, 95, 0.6));
 }
 
 .event-month {
@@ -993,10 +988,6 @@ body.invitation-open .hero-section > :nth-child(7) { animation-delay: 1.8s; }
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.rsvp-button {
-    animation: btnPulse 2.6s ease-in-out infinite;
-}
-
 .rsvp-button::after,
 .submit-rsvp::after {
     content: "";
@@ -1014,11 +1005,6 @@ body.invitation-open .hero-section > :nth-child(7) { animation-delay: 1.8s; }
 .submit-rsvp:hover {
     transform: translateY(-2px);
     box-shadow: 0 0 50px rgba(255, 215, 120, 0.7), 0 16px 34px rgba(0, 0, 0, 0.55);
-}
-
-@keyframes btnPulse {
-    0%, 100% { box-shadow: 0 0 22px rgba(212, 175, 95, 0.35), 0 14px 30px rgba(0, 0, 0, 0.5); }
-    50%      { box-shadow: 0 0 52px rgba(255, 215, 120, 0.7), 0 14px 30px rgba(0, 0, 0, 0.5); }
 }
 
 .submit-rsvp:disabled {
@@ -1073,9 +1059,7 @@ body.invitation-open .hero-section > :nth-child(7) { animation-delay: 1.8s; }
     justify-content: center;
     padding: 20px 12px;
     overflow-y: auto;
-    background: rgba(2, 10, 6, 0.86);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    background: rgba(2, 10, 6, 0.92);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.4s ease, visibility 0.4s;

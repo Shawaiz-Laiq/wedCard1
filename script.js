@@ -8,7 +8,7 @@ const invitation = document.getElementById("invitation");
 
 const duaText = document.getElementById("duaText");
 
-const dua = "بَارَكَ اللهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ";
+const dua = "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا";
 
 
 openButton.addEventListener("click", function () {
@@ -40,7 +40,7 @@ openButton.addEventListener("click", function () {
 
 
 // ===============================
-// COVER SPARKLES (front + back depth)
+// COVER SPARKLES (front + back depth)  - light version
 // ===============================
 
 const sparkleCanvas = document.getElementById("coverSparkles");
@@ -55,10 +55,41 @@ function stopSparkles() {
     if (!sparkleCanvas) return;
 
     const ctx = sparkleCanvas.getContext("2d");
-    let w = 0, h = 0, dpr = 1;
+    let w = 0, h = 0;
     let particles = [];
 
     const rand = function (a, b) { return a + Math.random() * (b - a); };
+
+    // pre-drawn sprites (much faster than gradients every frame)
+    function makeSprite(size, stops) {
+        const c = document.createElement("canvas");
+        c.width = c.height = size;
+        const g = c.getContext("2d");
+        const gr = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+        stops.forEach(function (s) { gr.addColorStop(s[0], s[1]); });
+        g.fillStyle = gr;
+        g.fillRect(0, 0, size, size);
+        return c;
+    }
+
+    const farSprite = makeSprite(64, [[0, "rgba(255,215,130,1)"], [1, "rgba(255,190,80,0)"]]);
+    const nearSprite = makeSprite(32, [[0, "rgba(255,244,205,1)"], [0.25, "rgba(255,210,110,0.55)"], [1, "rgba(255,190,80,0)"]]);
+
+    const starSprite = (function () {
+        const c = document.createElement("canvas");
+        c.width = c.height = 32;
+        const g = c.getContext("2d");
+        g.translate(16, 16);
+        g.fillStyle = "rgba(255,244,205,1)";
+        g.beginPath();
+        g.moveTo(0, -15);
+        g.quadraticCurveTo(0, 0, 15, 0);
+        g.quadraticCurveTo(0, 0, 0, 15);
+        g.quadraticCurveTo(0, 0, -15, 0);
+        g.quadraticCurveTo(0, 0, 0, -15);
+        g.fill();
+        return c;
+    })();
 
     function make(far) {
         return {
@@ -75,35 +106,18 @@ function stopSparkles() {
     }
 
     function resize() {
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
         w = sparkleCanvas.clientWidth;
         h = sparkleCanvas.clientHeight;
-        sparkleCanvas.width = w * dpr;
-        sparkleCanvas.height = h * dpr;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        sparkleCanvas.width = w;      // 1x resolution is plenty for soft glows
+        sparkleCanvas.height = h;
 
         const small = w < 600;
-        const farCount = small ? 12 : 20;
-        const nearCount = small ? 45 : 85;
+        const farCount = small ? 6 : 10;
+        const nearCount = small ? 22 : 40;
 
         particles = [];
         for (let i = 0; i < farCount; i++) particles.push(make(true));
         for (let i = 0; i < nearCount; i++) particles.push(make(false));
-    }
-
-    function star(x, y, r, alpha) {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.globalAlpha = alpha;
-        ctx.fillStyle = "rgba(255, 244, 205, 1)";
-        ctx.beginPath();
-        ctx.moveTo(0, -r * 3.2);
-        ctx.quadraticCurveTo(0, 0, r * 3.2, 0);
-        ctx.quadraticCurveTo(0, 0, 0, r * 3.2);
-        ctx.quadraticCurveTo(0, 0, -r * 3.2, 0);
-        ctx.quadraticCurveTo(0, 0, 0, -r * 3.2);
-        ctx.fill();
-        ctx.restore();
     }
 
     let last = performance.now();
@@ -119,43 +133,32 @@ function stopSparkles() {
         ctx.clearRect(0, 0, w, h);
         ctx.globalCompositeOperation = "lighter";
 
-        particles.forEach(function (p) {
+        for (let i = 0; i < particles.length; i++) {
+
+            const p = particles[i];
 
             p.y += p.vy * dt;
             p.x += (p.vx + Math.sin(t * 0.7 + p.ph) * 8) * dt;
 
-            if (p.y < -p.r * 5) { p.y = h + p.r * 5; p.x = rand(0, w); }
-            if (p.x < -p.r * 5) p.x = w + p.r * 5;
-            if (p.x > w + p.r * 5) p.x = -p.r * 5;
+            const m = p.r * 5;
+            if (p.y < -m) { p.y = h + m; p.x = rand(0, w); }
+            if (p.x < -m) p.x = w + m;
+            if (p.x > w + m) p.x = -m;
 
             const tw = 0.5 + 0.5 * Math.sin(t * p.sp + p.ph);
-            const alpha = p.a * (0.3 + 0.7 * tw);
+            ctx.globalAlpha = p.a * (0.3 + 0.7 * tw);
 
             if (p.far) {
-                // big soft bokeh (background depth)
-                const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-                g.addColorStop(0, "rgba(255, 215, 130," + alpha + ")");
-                g.addColorStop(1, "rgba(255, 190, 80, 0)");
-                ctx.fillStyle = g;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, 6.2832);
-                ctx.fill();
+                ctx.drawImage(farSprite, p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
             } else {
-                // small bright sparkle (foreground depth)
-                const gr = p.r * 5;
-                const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, gr);
-                g.addColorStop(0, "rgba(255, 244, 205," + alpha + ")");
-                g.addColorStop(0.25, "rgba(255, 210, 110," + (alpha * 0.55) + ")");
-                g.addColorStop(1, "rgba(255, 190, 80, 0)");
-                ctx.fillStyle = g;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, gr, 0, 6.2832);
-                ctx.fill();
-
-                if (p.r > 1.9 && tw > 0.6) star(p.x, p.y, p.r, alpha);
+                const s = p.r * 10;
+                ctx.drawImage(nearSprite, p.x - s / 2, p.y - s / 2, s, s);
+                if (p.r > 1.9 && tw > 0.6) {
+                    const q = p.r * 6.4;
+                    ctx.drawImage(starSprite, p.x - q / 2, p.y - q / 2, q, q);
+                }
             }
-
-        });
+        }
 
         ctx.globalAlpha = 1;
         requestAnimationFrame(frame);
@@ -214,7 +217,7 @@ let lightDir = 1;        // 1 = moving down, -1 = moving up
 let lightRunning = false;
 
 function sizeLightCanvas() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
     lw = window.innerWidth;
     lh = window.innerHeight;
     [lightBack, lightFront].forEach(function (cv) {
@@ -247,7 +250,7 @@ function drawLight() {
 
     const n = sweepCount();
     const trailLength = 0.16;     // long tail (share of the whole path)
-    const steps = 100;
+    const steps = 48;
 
     ctxBack.lineCap = "round";
     ctxFront.lineCap = "round";
@@ -301,9 +304,14 @@ function lightTargetS() {
     return Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
 }
 
+let lightSized = false;
+
 function startLight() {
 
-    sizeLightCanvas();
+    if (!lightSized) {
+        sizeLightCanvas();
+        lightSized = true;
+    }
 
     if (lightRunning) return;
     lightRunning = true;
@@ -340,6 +348,8 @@ window.addEventListener("scroll", function () {
 
 window.addEventListener("resize", function () {
     if (document.body.classList.contains("invitation-open")) {
+        sizeLightCanvas();
+        lightRunning = false;
         startLight();
     }
 });
