@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Walima Invitation | Ahmed & Laiba</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Great+Vibes&family=Playfair+Display:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="preload" as="image" href="file.webp">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- GOLDEN LIGHT: one behind the content, one in front -->
+    <canvas class="light-canvas light-back" id="lightBack"></canvas>
+    <canvas class="light-canvas light-front" id="lightFront"></canvas>
+
+    <!-- VIP COVER (front page) -->
+    <section class="cover" id="curtainStage">
+
+        <div class="cover-backdrop"></div>
+
+        <div class="cover-head">
+            <p class="cover-bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
+            <p class="cover-invite">YOU ARE CORDIALLY INVITED TO THE WALIMA OF</p>
+            <h2 class="cover-title gold-text">Ahmed <em>weds</em> Laiba</h2>
+        </div>
+
+        <div class="cover-stage">
+        <div class="cover-art" id="coverArt">
+
+            <!-- main picture -->
+            <img class="art-base" src="file.webp" alt="Ahmed weds Laiba - Walima invitation" fetchpriority="high">
+
+            <!-- moving curtain (swaying copy of the picture) -->
+            <div class="art-sway"></div>
+            <div class="cloth-light"></div>
+
+            <!-- warm breathing light behind / around -->
+            <div class="ambient ambient-left"></div>
+            <div class="ambient ambient-right"></div>
+            <div class="ambient ambient-seal"></div>
+
+            <!-- glowing side dots -->
+            <i class="glow-dot" style="--x:76%;--y:1%;--s:5%;--t:3.2s;--d:0s"></i>
+            <i class="glow-dot" style="--x:13.8%;--y:30%;--s:5%;--t:2.6s;--d:0.4s"></i>
+            <i class="glow-dot" style="--x:18.9%;--y:35%;--s:4%;--t:3.4s;--d:1.1s"></i>
+            <i class="glow-dot" style="--x:86.2%;--y:30%;--s:5%;--t:2.9s;--d:0.7s"></i>
+            <i class="glow-dot" style="--x:91%;--y:33.5%;--s:4.5%;--t:3.1s;--d:1.6s"></i>
+            <i class="glow-dot" style="--x:81.4%;--y:35%;--s:4%;--t:2.7s;--d:0.2s"></i>
+            <i class="glow-dot" style="--x:12.5%;--y:58%;--s:5.5%;--t:3.6s;--d:0.9s"></i>
+            <i class="glow-dot" style="--x:87.2%;--y:69.8%;--s:5%;--t:3s;--d:1.3s"></i>
+            <i class="glow-dot" style="--x:84.4%;--y:80.8%;--s:4.5%;--t:2.8s;--d:0.5s"></i>
+            <i class="glow-dot" style="--x:19.5%;--y:81.7%;--s:4.5%;--t:3.3s;--d:1.8s"></i>
+            <i class="glow-dot" style="--x:98.7%;--y:9%;--s:5%;--t:3.5s;--d:0.3s"></i>
+            <i class="glow-dot" style="--x:81.8%;--y:24.5%;--s:4%;--t:2.6s;--d:1.0s"></i>
+            <i class="glow-dot" style="--x:14.5%;--y:24.3%;--s:4%;--t:3s;--d:1.5s"></i>
+            <i class="glow-dot" style="--x:24%;--y:42%;--s:3.5%;--t:3.4s;--d:0.6s"></i>
+            <i class="glow-dot" style="--x:5%;--y:48%;--s:4%;--t:3.1s;--d:2.0s"></i>
+            <i class="glow-dot" style="--x:95%;--y:52%;--s:4%;--t:2.8s;--d:0.1s"></i>
+            <i class="glow-dot" style="--x:8%;--y:88%;--s:5%;--t:3.3s;--d:1.2s"></i>
+            <i class="glow-dot" style="--x:92%;--y:90%;--s:5%;--t:2.9s;--d:0.8s"></i>
+            <i class="glow-dot" style="--x:50%;--y:5%;--s:4%;--t:3.6s;--d:1.4s"></i>
+            <i class="glow-dot" style="--x:35%;--y:12%;--s:3.5%;--t:3s;--d:0.2s"></i>
+            <i class="glow-dot" style="--x:66%;--y:13%;--s:3.5%;--t:3.2s;--d:1.9s"></i>
+
+            <!-- shine sweep -->
+            <div class="cover-shine"></div>
+
+            <!-- TAP TO OPEN (sits exactly on the wax seal) -->
+            <button class="open-button" id="openButton" type="button" aria-label="Tap to open the invitation">
+                <span class="seal-ring"></span>
+                <span class="seal-ring seal-ring-2"></span>
+                <span class="seal-shine"></span>
+            </button>
+
+            <h1 class="sr-only">Ahmed weds Laiba - Walima Celebration</h1>
+        </div>
+
+        </div>
+
+        <div class="cover-foot">
+            <p class="cover-date">FRIDAY &nbsp;•&nbsp; 01 JANUARY 2027</p>
+            <p class="cover-hint">TAP THE GOLDEN SEAL TO OPEN YOUR INVITATION</p>
+        </div>
+
+        <!-- floating golden sparkles (front + back depth) -->
+        <canvas class="cover-sparkles" id="coverSparkles"></canvas>
+
+    </section>
+
+
+    <!-- MAIN INVITATION -->
+    <main class="invitation" id="invitation">
+
+        <!-- shared ornament -->
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+            <defs>
+                <symbol id="star8" viewBox="0 0 100 100">
+                    <g fill="none" stroke="currentColor" stroke-width="1.6">
+                        <rect x="22" y="22" width="56" height="56" />
+                        <rect x="22" y="22" width="56" height="56" transform="rotate(45 50 50)" />
+                        <circle cx="50" cy="50" r="12" />
+                        <circle cx="50" cy="50" r="3" fill="currentColor" />
+                    </g>
+                </symbol>
+            </defs>
+        </svg>
+
+        <!-- HERO / DUA -->
+        <section class="hero-section">
+
+            <svg class="medallion" aria-hidden="true"><use href="#star8" /></svg>
+
+            <p class="eyebrow">IN THE NAME OF ALLAH</p>
+
+            <h2 class="arabic-dua gold-text" id="duaText"></h2>
+
+            <p class="dua-translation">
+                May Allah bless you, and send blessings upon you, and bring you both together in goodness.
+            </p>
+
+            <div class="gold-divider"><span></span><b>✦</b><span></span></div>
+
+            <p class="invitation-message">
+                With the blessings of Allah Almighty,
+                we request the pleasure of your company
+                at the Walima celebration of
+            </p>
+
+            <h2 class="couple-names gold-text">Ahmed <span>&</span> Laiba</h2>
+
+            <p class="hero-bottom">A NEW JOURNEY BEGINS</p>
+
+            <div class="scroll-hint" aria-hidden="true">
+                <small>SCROLL</small>
+                <i></i>
+            </div>
+
+        </section>
+
+
+        <!-- FAMILY SECTION -->
+        <section class="family-section reveal-section">
+
+            <p class="eyebrow">WITH GREAT JOY</p>
+            <h2 class="section-heading">Together With Their Families</h2>
+
+            <div class="family-card">
+                <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+                <div class="family-decoration">❦</div>
+                <p class="family-label">THE HOSTS</p>
+                <h3 class="gold-text">Aslam & Family</h3>
+                <p>
+                    Cordially invite you to join them
+                    in celebrating this beautiful occasion.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- COUPLE SECTION -->
+        <section class="couple-section reveal-section">
+
+            <p class="eyebrow">THE CELEBRATION OF LOVE</p>
+            <h2 class="section-heading">Ahmed & Laiba</h2>
+
+            <div class="photo-frame">
+                <div class="photo-inner">
+                    <img src="WhatsApp Image 2026-11-05 at 1.21.08 PM.jpg" alt="Ahmed and Laiba">
+                </div>
+            </div>
+
+            <p class="photo-caption">Two hearts, one beautiful journey.</p>
+
+        </section>
+
+
+        <!-- EVENT DETAILS -->
+        <section class="event-section reveal-section">
+
+            <p class="eyebrow">SAVE THE DATE</p>
+            <h2 class="section-heading">The Walima</h2>
+
+            <div class="event-card">
+                <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+                <svg class="event-medallion" aria-hidden="true"><use href="#star8" /></svg>
+
+                <p class="event-month">JANUARY</p>
+                <h3 class="event-day gold-text">01</h3>
+                <p class="event-year">FRIDAY &nbsp;•&nbsp; 2027</p>
+
+                <!-- COUNTDOWN -->
+                <div class="countdown-section">
+
+                    <p class="countdown-heading">COUNTING DOWN TO OUR SPECIAL DAY</p>
+
+                    <div class="countdown-grid">
+                        <div class="countdown-box"><span id="days">000</span><small>DAYS</small></div>
+                        <div class="countdown-box"><span id="hours">00</span><small>HOURS</small></div>
+                        <div class="countdown-box"><span id="minutes">00</span><small>MINUTES</small></div>
+                        <div class="countdown-box"><span id="seconds">00</span><small>SECONDS</small></div>
+                    </div>
+
+                    <p class="countdown-note" id="countdownNote">
+                        Every second brings us closer to forever.
+                    </p>
+
+                </div>
+
+                <div class="gold-divider"><span></span><b>✦</b><span></span></div>
+
+                <div class="event-timings">
+
+                    <div class="timing-item">
+                        <span class="timing-icon">◷</span>
+                        <div>
+                            <p>GATHERING</p>
+                            <h4>8:00 PM</h4>
+                        </div>
+                    </div>
+
+                    <div class="timing-item">
+                        <span class="timing-icon">♨</span>
+                        <div>
+                            <p>DINNER</p>
+                            <h4>10:00 PM</h4>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="event-location">
+                    <span class="location-icon">⌖</span>
+                    <p class="location-label">VENUE</p>
+                    <h3>Our Celebration Venue</h3>
+                    <p class="location-description">
+                        Please update this with your venue address.
+                    </p>
+                    <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" class="map-link">
+                        VIEW LOCATION
+                    </a>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RSVP -->
+        <section class="rsvp-section reveal-section">
+
+            <p class="eyebrow">WE WOULD LOVE TO SEE YOU</p>
+            <h2 class="section-heading">Kindly Respond</h2>
+
+            <p class="rsvp-description">
+                Your presence will make our celebration
+                even more special.
+            </p>
+
+            <button class="rsvp-button" id="rsvpOpen" type="button">
+                CONFIRM YOUR PRESENCE
+            </button>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer class="footer-section">
+
+            <svg class="medallion small" aria-hidden="true"><use href="#star8" /></svg>
+
+            <p>WITH LOVE AND DUAS</p>
+
+            <h2 class="gold-text">Ahmed & Laiba</h2>
+
+            <p class="footer-date">01 • 01 • 2027</p>
+
+            <p class="footer-bottom">MAY ALLAH BLESS THIS BEAUTIFUL UNION</p>
+
+        </footer>
+
+    </main>
+
+
+    <!-- RSVP POPUP -->
+    <div class="rsvp-overlay" id="rsvpOverlay">
+
+        <div class="rsvp-modal">
+
+            <button class="close-modal" id="closeRsvp" type="button" aria-label="Close">×</button>
+
+            <p class="eyebrow">AHMED & LAIBA</p>
+
+            <h2>RSVP</h2>
+
+            <p class="modal-description">Kindly let us know if you can join us.</p>
+
+            <form id="rsvpForm">
+
+                <label for="guestName">Your Name</label>
+                <input type="text" id="guestName" placeholder="Enter your name" required>
+
+                <label for="guestPhone">Phone Number</label>
+                <input type="tel" id="guestPhone" placeholder="03001234567" required>
+
+                <label for="attendance">Will you attend?</label>
+                <select id="attendance" required>
+                    <option value="">Select your response</option>
+                    <option value="Yes">Joyfully Accept</option>
+                    <option value="No">Regretfully Decline</option>
+                </select>
+
+                <div id="guestCountGroup">
+                    <label for="guestCount">Total Guests (Including You)</label>
+                    <input type="number" id="guestCount" min="1" max="20" value="1" required>
+                </div>
+
+                <button type="submit" class="submit-rsvp">SUBMIT RESPONSE</button>
+
+            </form>
+
+            <p class="rsvp-message" id="rsvpMessage"></p>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
