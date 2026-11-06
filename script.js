@@ -112,8 +112,9 @@ function stopSparkles() {
         sparkleCanvas.height = h;
 
         const small = w < 600;
-        const farCount = small ? 6 : 10;
-        const nearCount = small ? 22 : 40;
+
+const farCount = small ? 2 : 6;
+const nearCount = small ? 8 : 20;
 
         particles = [];
         for (let i = 0; i < farCount; i++) particles.push(make(true));
@@ -123,6 +124,11 @@ function stopSparkles() {
     let last = performance.now();
 
     function frame(now) {
+        if (document.hidden) {
+    requestAnimationFrame(frame);
+    return;
+        }
+
 
         if (!sparkleRunning) return;
 
