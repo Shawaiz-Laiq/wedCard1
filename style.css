@@ -1199,3 +1199,22 @@ body.invitation-open .hero-section > :nth-child(7) { animation-delay: 1.8s; }
         display: none; /* front wala sab se zyada hang karta hai, mobile pe band */
     }
 }
+/* MOBILE PE ASLI LIGHT BAND, NAKLI HALKI LIGHT */
+@media (max-width: 768px) {
+    .light-canvas {
+        display: none !important;
+    }
+    /* Poori page pe ek halki si golden chamak */
+    body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        pointer-events: none;
+        background: radial-gradient(circle at 50% 20%, rgba(255, 210, 110, 0.12), transparent 50%);
+    }
+    /* Sparkles bhi mobile pe band - ye bhi hang karte hain */
+    #coverSparkles {
+        display: none !important;
+    }
+}

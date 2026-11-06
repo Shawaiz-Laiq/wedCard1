@@ -1,3 +1,14 @@
+// MOBILE PE LIGHT POORI BAND - PHATNE SE BACHANA HAI
+const isMobileLightOff = window.innerWidth < 768 || /Android|iPhone/i.test(navigator.userAgent);
+if (isMobileLightOff) {
+    const lb = document.getElementById("lightBack");
+    const lf = document.getElementById("lightFront");
+    if (lb) lb.style.display = "none";
+    if (lf) lf.style.display = "none";
+}
+
+
+
 // ===============================
 // CURTAIN OPENING
 // ===============================
@@ -312,6 +323,7 @@ let lightSized = false;
 let idleTimer = null;
 
 function startLight() {
+    if (isMobileLightOff) return;
 
     if (!lightSized) {
         sizeLightCanvas();
