@@ -183,22 +183,22 @@ const nearCount = small ? 8 : 20;
 
 function typeDua() {
 
+    const letters = Array.from(dua);
     let index = 0;
 
     duaText.textContent = "";
 
     const typing = setInterval(function () {
 
-        duaText.textContent += dua.charAt(index);
+        duaText.textContent = letters.slice(0, index + 1).join("");
 
         index++;
 
-        if (index >= dua.length) {
+        if (index >= letters.length) {
             clearInterval(typing);
         }
 
-    }, 100);
-
+    },50);
 }
 
 
@@ -256,7 +256,7 @@ function drawLight() {
 
     const n = sweepCount();
     const trailLength = 0.16;     // long tail (share of the whole path)
-    const steps = 48;
+    const steps = window.innerWidth < 600 ? 18 : 36;
 
     ctxBack.lineCap = "round";
     ctxFront.lineCap = "round";
@@ -312,6 +312,8 @@ function lightTargetS() {
 
 let lightSized = false;
 
+let lightFrame = null;
+
 function startLight() {
 
     if (!lightSized) {
@@ -319,32 +321,44 @@ function startLight() {
         lightSized = true;
     }
 
-    if (lightRunning) return;
-    lightRunning = true;
+    // One animation frame at a time
+    if (lightFrame !== null) return;
 
-    (function step() {
+    lightFrame = requestAnimationFrame(function () {
 
         const target = lightTargetS();
-        const diff = target - lightS;
 
-        if (Math.abs(diff) > 0.00002) {
-            lightDir = diff > 0 ? 1 : -1;
-        }
+        lightDir = target >= lightS ? 1 : -1;
 
-        lightS += diff * 0.14;
+        // Light follows the actual scroll position
+        lightS = target;
 
         drawLight();
 
-        if (Math.abs(diff) > 0.0003) {
-            requestAnimationFrame(step);
-        } else {
-            lightS = target;
-            drawLight();
-            lightRunning = false;
-        }
-
-    })();
+        lightFrame = null;
+    });
 }
+
+window.addEventListener("scroll", function () {
+
+    if (document.body.classList.contains("invitation-open")) {
+        startLight();
+    }
+
+}, { passive: true });
+
+
+window.addEventListener("resize", function () {
+
+    if (document.body.classList.contains("invitation-open")) {
+
+        sizeLightCanvas();
+        lightSized = true;
+
+        startLight();
+    }
+
+});
 
 window.addEventListener("scroll", function () {
     if (document.body.classList.contains("invitation-open")) {
