@@ -112,9 +112,8 @@ function stopSparkles() {
         sparkleCanvas.height = h;
 
         const small = w < 600;
-
-const farCount = small ? 2 : 6;
-const nearCount = small ? 8 : 20;
+        const farCount = small ? 6 : 10;
+        const nearCount = small ? 22 : 40;
 
         particles = [];
         for (let i = 0; i < farCount; i++) particles.push(make(true));
@@ -124,11 +123,6 @@ const nearCount = small ? 8 : 20;
     let last = performance.now();
 
     function frame(now) {
-        if (document.hidden) {
-    requestAnimationFrame(frame);
-    return;
-        }
-
 
         if (!sparkleRunning) return;
 
@@ -183,22 +177,22 @@ const nearCount = small ? 8 : 20;
 
 function typeDua() {
 
-    const letters = Array.from(dua);
     let index = 0;
 
     duaText.textContent = "";
 
     const typing = setInterval(function () {
 
-        duaText.textContent = letters.slice(0, index + 1).join("");
+        duaText.textContent += dua.charAt(index);
 
         index++;
 
-        if (index >= letters.length) {
+        if (index >= dua.length) {
             clearInterval(typing);
         }
 
-    },50);
+    }, 100);
+
 }
 
 
@@ -221,9 +215,13 @@ let lw = 0, lh = 0;
 let lightS = 0;          // smoothed scroll progress (0 - 1)
 let lightDir = 1;        // 1 = moving down, -1 = moving up
 let lightRunning = false;
+let lightRaf = null;
+let lastDraw = 0;
+
+const isMobile = window.innerWidth < 768 || /Android|iPhone/i.test(navigator.userAgent);
 
 function sizeLightCanvas() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+    const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.25);
     lw = window.innerWidth;
     lh = window.innerHeight;
     [lightBack, lightFront].forEach(function (cv) {
@@ -255,8 +253,8 @@ function drawLight() {
     ctxFront.clearRect(0, 0, lw, lh);
 
     const n = sweepCount();
-    const trailLength = 0.16;     // long tail (share of the whole path)
-    const steps = window.innerWidth < 600 ? 18 : 36;
+    const trailLength = isMobile ? 0.08 : 0.16;    // long tail (share of the whole path)
+     const steps = isMobile ? 18 : 48;
 
     ctxBack.lineCap = "round";
     ctxFront.lineCap = "round";
@@ -311,8 +309,7 @@ function lightTargetS() {
 }
 
 let lightSized = false;
-
-let lightFrame = null;
+let idleTimer = null;
 
 function startLight() {
 
@@ -321,55 +318,55 @@ function startLight() {
         lightSized = true;
     }
 
-    // One animation frame at a time
-    if (lightFrame !== null) return;
+    if (lightRunning) return;
+    lightRunning = true;
 
-    lightFrame = requestAnimationFrame(function () {
+    function step(now) {
+            if (isMobile && now - lastDraw < 33) {
+            lightRaf = requestAnimationFrame(step);
+            return;
+        }
+        lastDraw = now;
 
         const target = lightTargetS();
+        const diff = target - lightS;
 
-        lightDir = target >= lightS ? 1 : -1;
+        if (Math.abs(diff) > 0.00002) {
+            lightDir = diff > 0 ? 1 : -1;
+        }
 
-        // Light follows the actual scroll position
-        lightS = target;
+        lightS += diff * 0.14;
 
         drawLight();
 
-        lightFrame = null;
-    });
+        if (Math.abs(diff) > 0.0003) {
+            lightRaf = requestAnimationFrame(step);
+        } else {
+            lightS = target;
+            drawLight();
+            lightRunning = false;
+            lightRaf = null;
+        }
+
+    } lightRaf = requestAnimationFrame(step);
 }
 
+let scrollTicking = false;
 window.addEventListener("scroll", function () {
-
-    if (document.body.classList.contains("invitation-open")) {
+    if (!document.body.classList.contains("invitation-open")) return;
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(function() {
         startLight();
-    }
-
-}, { passive: true });
-
-
-window.addEventListener("resize", function () {
-
-    if (document.body.classList.contains("invitation-open")) {
-
-        sizeLightCanvas();
-        lightSized = true;
-
-        startLight();
-    }
-
-});
-
-window.addEventListener("scroll", function () {
-    if (document.body.classList.contains("invitation-open")) {
-        startLight();
-    }
+        scrollTicking = false;
+    });
 }, { passive: true });
 
 window.addEventListener("resize", function () {
     if (document.body.classList.contains("invitation-open")) {
         sizeLightCanvas();
         lightRunning = false;
+        if (lightRaf) cancelAnimationFrame(lightRaf);
         startLight();
     }
 });

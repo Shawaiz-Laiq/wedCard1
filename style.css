@@ -1187,43 +1187,15 @@ body.invitation-open .hero-section > :nth-child(7) { animation-delay: 1.8s; }
     }
 }
 
-/* MOBILE PERFORMANCE OPTIMIZATION */
-@media (max-width: 600px) {
-
-    /* Remove expensive background blur */
-    .cover-backdrop {
-        filter: none;
-        opacity: 0.65;
+.light-canvas {
+    will-change: opacity;
+    /* mobile pe halka light */
+}
+@media (max-width: 768px) {
+    .light-canvas {
+        opacity: 0.6 !important;
     }
-
-    /* Stop moving full-size image */
-    .art-sway {
-        animation: none;
+    .light-front {
+        display: none; /* front wala sab se zyada hang karta hai, mobile pe band */
     }
-
-    /* Reduce ambient effects */
-    .ambient {
-        animation: none;
-        opacity: 0.35;
-    }
-
-    /* Reduce glow animations */
-    .glow-dot {
-        animation-duration: 5s;
-    }
-
-    /* Reduce seal effects */
-    .seal-ring-2 {
-        display: none;
-    }
-
-    .open-button::before {
-        animation-duration: 4s;
-    }
-
-    /* Reduce shine frequency */
-    .cover-shine::before {
-        animation-duration: 8s;
-    }
-
 }
